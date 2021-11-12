@@ -25,6 +25,7 @@ const findUserByEmail = (email) => {
   for (key in users) {
       if (users[key].email === email) {
           return users[key];
+          //return users[key]; return a boolean value?
       }
   }
   return null;
@@ -34,7 +35,7 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "Walid_douri@hotmail.com", 
-    password: "purple-monkey-dinosaur"
+    password: "911"
   },
  "user2RandomID": {
     id: "user2RandomID", 
@@ -103,6 +104,14 @@ app.get("/urls/:shortURL", (req, res) => {
       };
     res.render("register", templateVars);
   });
+
+  // A New Login Page [W03D3 4/7]
+  app.get("/login", (req, res) => {
+    const templateVars = {
+      user: users[req.cookies["user_id"]]
+    }
+    res.render("login", templateVars);
+  });
   
   ///POST/////////POST//////////////POST//////
   ///POST/////////POST//////////////POST/////
@@ -141,13 +150,30 @@ app.get("/urls/:shortURL", (req, res) => {
   
   //cookie /login page
   app.post("/login", (req, res) => {
-    //console.log(req.body.username);
-    // console.log(req.body);
-    const loginDatabase = req.body.user_id
-    res.cookie("user_id", loginDatabase)
-      //res.send('Login Successfully')
-      res.redirect("/urls")
-  }); 
+    const {email, password} = req.body
+    const user = findUserByEmail(email)
+    const id = generateRandomString();
+   // console.log(user)
+    const afterRegistration = (userId) => {
+      res.cookie("user_id", userId);
+      res.redirect("/urls");
+    } 
+    if (!findUserByEmail(email)) {
+      res.status(403).send('Email cannot be found');
+    }
+    if (!email || user.password !== password) {
+      res.status(403).send("Invalid email or password");
+    }
+    users[id] = {
+      id: id,
+      email: req.body.email,
+      password: req.body.password
+    }
+    afterRegistration(id)
+    
+});
+
+  //res.render("partials/_header.ejs", {user:users.userRandomID})
   
   // logout & clears cookies [Cookies in Express]
   app.post("/logout", (req, res) => {
@@ -162,13 +188,13 @@ app.get("/urls/:shortURL", (req, res) => {
         res.redirect("/urls");
     } 
     const {email, password} = req.body
+    //const foundUser = findUserByEmail(req.body.email);
+    
+    //Handle Registration Errors conditions
     if (email === "" || password === "") {
       res.status(400).send('Invalid email or password')
-    }
-    console.log(req.body);
-    const foundUser = findUserByEmail(req.body.email);
-    if (foundUser) {
-      afterRegistration(foundUser.id);
+    } else if (findUserByEmail(req.body.email)) {
+      res.status(400).send('Email has already been registered')
     } else {
       const id = generateRandomString();
       // creating a new profile for the user - temp

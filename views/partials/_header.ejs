@@ -9,6 +9,8 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        <a class="nav-item nav-link" href="/login">Login</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
       </div>
     </div>
 
@@ -17,13 +19,24 @@
       <form action="/logout" method="POST">
     <button type="submit" class="btn btn-primary">Logout</button>
     </form>
-    <% } else { %>  
+    <% } else { %> 
+
+      <!-- Login button -->
       <form class="form-inline" action="/login" method="POST">
         <div class="form-group mb-2">
-          <input class="form-control" type="email" name="user_id" placeholder="Username" style="width: 200px; margin: 1em">
           <button type="submit" class="btn btn-primary" href="/login">Login</button>
         </div>
-      </form>
- <% } %> 
+      </form> 
+         <!-- <input class="form-control" type="email" name="user_id" placeholder="Username" style="width: 200px; margin: 1em"> -->
+
+      <% } %> 
+
+      <!-- register button 
+      <form class="form-inline" action="/register" method="POST">
+        <div class="form-group mb-2">
+          <button type="submit" class="btn btn-primary" href="/login">Register</button>
+        </div>
+      </form>   --> 
+      
   </nav>
 </header>
